@@ -149,16 +149,20 @@ class RCTCameraViewFinder extends TextureView implements TextureView.SurfaceText
 
     @Override
     public void onResult(Camera camera, Result result) {
-        if (result != null) {
-            ReactContext reactContext = (ReactContext) getContext();
-            WritableMap event = Arguments.createMap();
-            event.putString("data", result.getText());
-            event.putString("type", result.getBarcodeFormat().toString());
-            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit("CameraBarCodeRead", event);
-            camera.setOneShotPreviewCallback(this);
-        } else {
-            camera.setOneShotPreviewCallback(this);
+        try{
+            if (result != null) {
+                ReactContext reactContext = (ReactContext) getContext();
+                WritableMap event = Arguments.createMap();
+                event.putString("data", result.getText());
+                event.putString("type", result.getBarcodeFormat().toString());
+                reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                        .emit("CameraBarCodeRead", event);
+                camera.setOneShotPreviewCallback(this);
+            } else {
+                camera.setOneShotPreviewCallback(this);
+            }
+        }catch(Exception ex){
+
         }
     }
 }
